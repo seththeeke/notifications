@@ -1,10 +1,9 @@
 import * as cdk from '@aws-cdk/core';
-import * as lambda from '@aws-cdk/aws-lambda';
 import * as ddb from '@aws-cdk/aws-dynamodb';
-import * as events from '@aws-cdk/aws-events';
-import * as targets from '@aws-cdk/aws-events-targets';
-import * as pinpoint from '@aws-cdk/aws-pinpoint';
-import path = require('path');
+import * as sns from '@aws-cdk/aws-sns';
+import { NotificationHandlerLambda } from './lambda/notification-handler-lambda';
+import { ConfigurationUpdatedHandlerLambda } from './lambda/configuration-updated-handler-lambda';
+import { UpdateConfigurationLambda } from './lambda/update-configuration-lambda';
 
 export class InfrastructureStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -15,52 +14,27 @@ export class InfrastructureStack extends cdk.Stack {
         name: "phoneNumber",
         type: ddb.AttributeType.STRING
       },
-      billingMode: ddb.BillingMode.PAY_PER_REQUEST
+      billingMode: ddb.BillingMode.PAY_PER_REQUEST,
+      stream: ddb.StreamViewType.NEW_AND_OLD_IMAGES
     });
 
-    const notificationLambda = new lambda.Function(this, "NotificationLambda", {
-      code: lambda.Code.fromAsset(path.join(__dirname, '../../lambda')),
-      handler: "index.notificationHandler",
-      runtime: lambda.Runtime.NODEJS_12_X,
-      timeout: cdk.Duration.seconds(300),
-      environment: {
-        "CONFIGURATION_TABLE_NAME": configurationTable.tableName
-      }
+    const notificationTopic = new sns.Topic(this, "NotificationTopic", {
+      topicName: "NotificationTopic"
     });
 
-    configurationTable.grantReadData(notificationLambda);
-
-    const notificationLambdaTarget = new targets.LambdaFunction(notificationLambda);
-
-    const cloudwatchEventTrigger = new events.Rule(this, "CloudWatchEventTrigger", {
-      ruleName: "NotificationHandlerSchedule",
-      schedule: events.Schedule.cron({
-        minute: "0/1"
-      }),
-      targets: [notificationLambdaTarget]
+    const notificationLambda = new NotificationHandlerLambda(this, "NotificationHandler", {
+      configurationTable,
+      notificationTopic
     });
 
-    const updateConfigurationLambda = new lambda.Function(this, "UpdateConfigurationLambda", {
-      code: lambda.Code.fromAsset(path.join(__dirname, '../../lambda')),
-      handler: "index.updateConfigurationHandler",
-      runtime: lambda.Runtime.NODEJS_12_X,
-      timeout: cdk.Duration.seconds(300),
-      environment: {
-        "CONFIGURATION_TABLE_NAME": configurationTable.tableName
-      }
+    const updateConfigurationLambda = new UpdateConfigurationLambda(this, "UpdateConfiguration", {
+      configurationTable
     });
 
-    configurationTable.grantFullAccess(updateConfigurationLambda);
-
-    // Need to Request Short Code before Pinpoint will work
-    // const pinpointApp = new pinpoint.CfnApp(this, "PinpointApp", {
-    //   name: "Notifications"
-    // });
-
-    // const smsChannel = new pinpoint.CfnSMSChannel(this, "NotificationsSMSChannel", {
-    //   applicationId: pinpointApp.ref,
-    //   enabled: true
-    // });
+    const configurationUpdatedLambda = new ConfigurationUpdatedHandlerLambda(this, "ConfigurationUpdatedHandler", {
+      configurationTable,
+      notificationTopic
+    });
 
   }
 }
