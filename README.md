@@ -22,6 +22,9 @@ This project relies on a value being stored in AWS Secrets manager in order to o
 }
 ```
 
+### Pinpoint Short Code
+Follow the aws doc [here](https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-awssupport-short-code.html) in order to request the short code needed for AWS Pinpoint. 
+
 ### Deployment
 
 This project is made up of a CDK project and a number of Lambda functions. To build and deploy, perform the following.

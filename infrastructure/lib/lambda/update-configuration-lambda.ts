@@ -23,13 +23,12 @@ export class UpdateConfigurationLambda extends NotificationLambda {
     const updateConfigurationTopic = new sns.Topic(this, "UpdateConfigTopic", {
         topicName: "UpdateNotificationConfigurationTopic"
     });
-    // SNS Event Source Not Working...
     // this.addEventSource(new lambdaEventSources.SnsEventSource(updateConfigurationTopic));
 
     // Need to Request Short Code before Pinpoint will work
-    // const pinpointApp = new pinpoint.CfnApp(this, "PinpointApp", {
-    //   name: "Notifications"
-    // });
+    const pinpointApp = new pinpoint.CfnApp(this, "PinpointApp", {
+      name: "Notifications"
+    });
 
     // const smsChannel = new pinpoint.CfnSMSChannel(this, "NotificationsSMSChannel", {
     //   applicationId: pinpointApp.ref,
