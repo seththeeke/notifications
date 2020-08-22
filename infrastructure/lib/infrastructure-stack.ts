@@ -29,22 +29,27 @@ export class InfrastructureStack extends cdk.Stack {
     const emailPhoneSecret = secretsmanager.Secret.fromSecretAttributes(this, "EmailPhoneSecret", {
       secretArn: SECRET_ARN
     });
-    const emailSubscription = new sns.Subscription(this, "EmailSubscription", {
+    new sns.Subscription(this, "EmailSubscription", {
       protocol: sns.SubscriptionProtocol.EMAIL,
       endpoint: emailPhoneSecret.secretValueFromJson("email").toString(),
       topic: notificationTopic
     });
+    new sns.Subscription(this, "SMSSubscription", {
+      protocol: sns.SubscriptionProtocol.SMS,
+      endpoint: emailPhoneSecret.secretValueFromJson("phoneNumber").toString(),
+      topic: notificationTopic
+    });
 
-    const notificationLambda = new NotificationHandlerLambda(this, "NotificationHandler", {
+    new NotificationHandlerLambda(this, "NotificationHandler", {
       configurationTable,
       notificationTopic
     });
 
-    const updateConfigurationLambda = new UpdateConfigurationLambda(this, "UpdateConfiguration", {
+    new UpdateConfigurationLambda(this, "UpdateConfiguration", {
       configurationTable
     });
 
-    const configurationUpdatedLambda = new ConfigurationUpdatedHandlerLambda(this, "ConfigurationUpdatedHandler", {
+    new ConfigurationUpdatedHandlerLambda(this, "ConfigurationUpdatedHandler", {
       configurationTable,
       notificationTopic
     });

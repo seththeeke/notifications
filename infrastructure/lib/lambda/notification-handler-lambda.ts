@@ -1,6 +1,8 @@
 import * as cdk from '@aws-cdk/core';
 import * as ddb from '@aws-cdk/aws-dynamodb';
 import * as sns from '@aws-cdk/aws-sns';
+import * as targets from '@aws-cdk/aws-events-targets';
+import * as events from '@aws-cdk/aws-events';
 import { NotificationLambda } from './notification-lambda';
 
 export interface NotificationHandlerLambdaProps {
@@ -20,15 +22,17 @@ export class NotificationHandlerLambda extends NotificationLambda {
     props.configurationTable.grantReadData(this);
     props.notificationTopic.grantPublish(this);
 
-    // const notificationLambdaTarget = new targets.LambdaFunction(this);
-
-    // const cloudwatchEventTrigger = new events.Rule(this, "CloudWatchEventTrigger", {
-    //   ruleName: "NotificationHandlerSchedule",
-    //   schedule: events.Schedule.cron({
-    //     minute: "0/1"
-    //   }),
-    //   targets: [notificationLambdaTarget]
-    // });
+    const notificationLambdaTarget = new targets.LambdaFunction(this);
+    new events.Rule(this, "CloudWatchEventTrigger", {
+      ruleName: "NotificationHandlerSchedule",
+      schedule: events.Schedule.cron({
+        minute: "0",
+        hour: "14",
+        day: "1/1"
+      }),
+      description: "CloudWatch rule to run daily to send applicable notifications",
+      targets: [notificationLambdaTarget]
+    });
 
   }
 }
