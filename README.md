@@ -6,7 +6,7 @@ I'm forgetful and between iPhone calendars, Outlook calendars, alarms, etc, I st
 
 This project primarily uses Lambda, Pinpoint, Dynamo, and SNS. A configuration is stored in a Dynamo Table representing the events of significance. Once a day at 9AM, a CloudWatch event triggers a Lambda function to scan the table and notify appropriately by pushing an event to an SNS topic to notify me via email, sms, or both. I have an enabled Pinpoint application to let me quickly configure my table via an SMS message to trigger a configuration Lambda and an additional Lambda to confirm changes to the configuration. It is currently built to support a single person's notifications rather than an application that would support more than one user.
 
-Some Diagram
+![Architecture Image From DrawIO](Notifications.png)
 
 ## Dev
 
