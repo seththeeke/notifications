@@ -15,6 +15,13 @@ Some Diagram
 ### Email and Phone Number Config
 This project relies on a value being stored in AWS Secrets manager in order to obfuscate your email and phone number. This must be added to secrets manager in the following format and then update the email and phone arn constant in the infrastructure stack.
 
+```
+{
+    "email": "someemail@email.com"
+    "phoneNumber": "1115550123
+}
+```
+
 ### Deployment
 
 This project is made up of a CDK project and a number of Lambda functions. To build and deploy, perform the following.

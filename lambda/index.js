@@ -10,7 +10,26 @@ exports.notificationHandler = async (event, context) => {
         let results = await dynamodb.scan({
             TableName: process.env.CONFIGURATION_TABLE_NAME
         }).promise();
-        console.log(JSON.stringify(results));
+        if (results.Items.length > 1){
+            throw new Error("Should not have more than a single configuration");
+        }
+        let myConfigDates = results.Items[0].notificationConfig.M;
+        console.log("My current date config is " + myConfigDates);
+        let currDate = new Date();
+        let thisMonth = currDate.getMonth() + 1;
+        let thisDate = currDate.getDate();
+        let dateConfigKey = thisMonth + "/" + thisDate;
+        let dateConfig = myConfigDates[dateConfigKey];
+        console.log("Date config for key " + dateConfigKey + " has value " + dateConfigKey);
+        if (dateConfig){
+            let publishParams = {
+                Message: dateConfig.M.description.S,
+                Subject: dateConfig.M.subject.S,
+                TopicArn: process.env.TOPIC_ARN
+            };            
+            console.log("Publishing to notification topic with params " + JSON.stringify(publishParams));
+            await sns.publish(publishParams).promise();
+        }
         return respond(event);
     } catch (err) {
         console.log(err);
