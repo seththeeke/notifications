@@ -12,7 +12,7 @@ exports.notificationHandler = async (event, context) => {
     }
 };
 
-exports.updateConfiguration = async (event, context) => {
+exports.updateConfigurationHandler = async (event, context) => {
     try {
         console.log(JSON.stringify(event));
         return respond(event);

@@ -3,6 +3,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as ddb from '@aws-cdk/aws-dynamodb';
 import * as events from '@aws-cdk/aws-events';
 import * as targets from '@aws-cdk/aws-events-targets';
+import * as pinpoint from '@aws-cdk/aws-pinpoint';
 import path = require('path');
 
 export class InfrastructureStack extends cdk.Stack {
@@ -38,6 +39,28 @@ export class InfrastructureStack extends cdk.Stack {
       }),
       targets: [notificationLambdaTarget]
     });
+
+    const updateConfigurationLambda = new lambda.Function(this, "UpdateConfigurationLambda", {
+      code: lambda.Code.fromAsset(path.join(__dirname, '../../lambda')),
+      handler: "index.updateConfigurationHandler",
+      runtime: lambda.Runtime.NODEJS_12_X,
+      timeout: cdk.Duration.seconds(300),
+      environment: {
+        "CONFIGURATION_TABLE_NAME": configurationTable.tableName
+      }
+    });
+
+    configurationTable.grantFullAccess(updateConfigurationLambda);
+
+    // Need to Request Short Code before Pinpoint will work
+    // const pinpointApp = new pinpoint.CfnApp(this, "PinpointApp", {
+    //   name: "Notifications"
+    // });
+
+    // const smsChannel = new pinpoint.CfnSMSChannel(this, "NotificationsSMSChannel", {
+    //   applicationId: pinpointApp.ref,
+    //   enabled: true
+    // });
 
   }
 }
