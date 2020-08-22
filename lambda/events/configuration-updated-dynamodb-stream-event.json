@@ -1,0 +1,46 @@
+{
+    "Records": [
+        {
+            "eventID": "766d217bbbd93ff71a6a4164735bb5eb",
+            "eventName": "INSERT",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-east-1",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1598120638,
+                "Keys": {
+                    "phoneNumber": {
+                        "S": "3043769298"
+                    }
+                },
+                "NewImage": {
+                    "phoneNumber": {
+                        "S": "3043769298"
+                    },
+                    "notificationConfig": {
+                        "L": [
+                            {
+                                "M": {
+                                    "8/22": {
+                                        "M": {
+                                            "subject": {
+                                                "S": "MyTestSubject"
+                                            },
+                                            "description": {
+                                                "S": "This is a notification about a special day"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "SequenceNumber": "100000000000216230358",
+                "SizeBytes": 150,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "arn:aws:dynamodb:us-east-1:746598098477:table/InfrastructureStack-ConfigurationTable2608F30B-2986Z1JZCJ6G/stream/2020-08-22T17:00:21.189"
+        }
+    ]
+}
