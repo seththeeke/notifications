@@ -1,0 +1,13 @@
+{
+    "version": "0",
+    "id": "42a269da-8c18-ef75-37e0-6bc711dc61f4",
+    "detail-type": "Scheduled Event",
+    "source": "aws.events",
+    "account": "159622748176",
+    "time": "2020-08-22T02:15:00Z",
+    "region": "us-east-1",
+    "resources": [
+        "arn:aws:events:us-east-1:159622748176:rule/NotificationHandlerSchedule"
+    ],
+    "detail": {}
+}

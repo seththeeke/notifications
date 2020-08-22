@@ -22,6 +22,10 @@
   },
   "dependencies": {
     "@aws-cdk/core": "1.57.0",
+    "@aws-cdk/aws-lambda": "1.57.0",
+    "@aws-cdk/aws-dynamodb": "1.57.0",
+    "@aws-cdk/aws-events": "1.57.0",
+    "@aws-cdk/aws-events-targets": "1.57.0",
     "source-map-support": "^0.5.16"
   }
 }
