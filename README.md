@@ -1,6 +1,6 @@
 # Notifications
 
-I'm forgetful and between iPhone calendars, Outlook calendars, alarms, etc, I still find myself forgetting recurring or one-time events. I made this to send me text messages and emails for events that I deem significant because I respond better to sms and email and text to forget less over other types of notifications. 
+I'm forgetful and between iPhone calendars, Outlook calendars, alarms, etc, I still find myself forgetting recurring or one-time events. I made this to send me text messages and emails for events that I deem significant because I respond better to sms and email. 
 
 ## Architecture
 
